@@ -1,0 +1,23 @@
+- name: Install Nginx
+  apt:
+    name: "{{ ngnix_package_name }}"
+    state: present
+  
+- name: Remove default site
+  file:
+    path: "{{ nginx_default_site_config_path }}"
+    state: absent
+
+- name: Create config for reverse proxy
+  template:
+    src: "{{ nginx_reverse_proxy_config_name }}.j2"
+    dest: "/etc/nginx/sites-available/{{ nginx_reverse_proxy_config_name }}"
+  notify: Restart Nginx
+
+- name: Create symlink for config file
+  file:
+    src:  "/etc/nginx/sites-available/{{ nginx_reverse_proxy_config_name }}"
+    path: "/etc/nginx/sites-enabled/{{ nginx_reverse_proxy_config_name }}"
+    state: link
+  notify: Restart Nginx
+

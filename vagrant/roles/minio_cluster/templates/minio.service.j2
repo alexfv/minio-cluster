@@ -1,0 +1,21 @@
+[Unit]
+Description=minio
+Documentation=https://docs.min.io
+Wants=network-online.target
+After=network-online.target
+AssertFileIsExecutable={{ minio_dir_path }}/{{ minio_bin_name }}
+#
+[Service]
+WorkingDirectory={{ minio_dir_path }}
+User=root
+Group=root
+EnvironmentFile={{ minio_config_path }}
+ExecStart={{ minio_dir_path }}/{{ minio_bin_name }} server ${MINIO_OPTS}
+Restart=always
+LimitNOFILE=65536
+TimeoutStopSec=infinity
+SendSIGKILL=no
+#
+[Install]
+WantedBy=multi-user.target
+

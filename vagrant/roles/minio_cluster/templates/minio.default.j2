@@ -1,0 +1,4 @@
+MINIO_OPTS="http://minio-node-{1...{{ groups['minio_nodes'] | length }}}:9000{{ minio_data_dir }}/{1...{{ minio_shards_per_node }}}"
+MINIO_ACCESS_KEY="{{ minio_access_key }}"
+MINIO_SECRET_KEY="{{ minio_secret_key }}"
+

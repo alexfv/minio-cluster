@@ -1,0 +1,26 @@
+---
+- hosts: all
+  vars:
+  gather_facts: no
+  become: true
+  roles:
+    - role: bootstrap
+      tags: bootstrap
+
+- hosts: minio_nodes
+  vars_files:
+    - vault_vars.yaml
+  gather_facts: no
+  become: true
+  roles:
+    - role: minio_cluster
+      tags: minio_cluster
+
+- hosts: balancers
+  vars:
+  gather_facts: no
+  become: true
+  roles:
+    - role: nginx_proxy
+      tags: nginx_proxy
+

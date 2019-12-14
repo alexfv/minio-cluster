@@ -1,0 +1,17 @@
+upstream minio_servers
+{
+{% for host in  groups['minio_nodes'] | sort %}
+   server {{ hostvars[host].inventory_hostname }}:9000;
+{% endfor %}
+}
+server
+{
+   listen 80;
+   server_name minio-cluster;
+   location /
+   {
+      proxy_set_header Host $http_host;
+      proxy_pass       http://minio_servers;
+   }
+}
+

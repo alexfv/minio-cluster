@@ -1,0 +1,6 @@
+- name: Restart MinIO
+  systemd:
+    daemon_reload: yes
+    name: minio
+    state: restarted
+    enabled: true

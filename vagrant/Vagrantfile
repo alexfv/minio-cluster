@@ -17,7 +17,30 @@ Vagrant.configure("2") do |config|
       if i == N
         node.vm.provision :ansible do |ansible|
           ansible.limit = "all"
-          ansible.playbook = "playbook.yml"
+# simple-playbook.yaml deploys the cluster within a one playbook
+# main.yaml demonstrates using of all Ansible features- roles, templates, vaults etc.
+#          ansible.playbook = "playbook.yml"
+          ansible.playbook = "main.yaml"
+          ansible.vault_password_file = "vault_password_file"
+          ansible.groups =
+          {
+            "hosts"       => ["minio-node-1", "minio-node-2", "minio-node-3"],
+            "minio_nodes" => ["minio-node-1", "minio-node-2", "minio-node-3"],
+            "balancers"   => ["minio-node-1", "minio-node-2", "minio-node-3"], 
+            "minio_nodes:vars" =>
+               {"minio_server_url"                      => "https://dl.min.io/server/minio/release/linux-amd64/minio",
+                "minio_client_url"                      => "https://dl.min.io/client/mc/release/linux-amd64/mc",
+                "minio_data_dir"                        => "/data",
+                "minio_access_key"                      => "XNb8yMbYVgbEUEVFd8Q95pXhWTuKJdvd"},
+            "all:vars"         =>
+               {"systemd_service_files_dir_path"        => "/lib/systemd/system",
+                "systemd_service_default_envs_path_dir" => "/etc/default"}
+          }
+          ansible.host_vars = {
+            "minio-node-1" => {"cluster_node_ip" => "192.168.1.101"},
+            "minio-node-2" => {"cluster_node_ip" => "192.168.1.102"},
+            "minio-node-3" => {"cluster_node_ip" => "192.168.1.103"}
+          }
         end
       end
     end

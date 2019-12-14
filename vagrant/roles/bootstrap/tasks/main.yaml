@@ -1,0 +1,10 @@
+- name: Bootstrap a host without python installed
+  raw: apt install -y python
+
+- name: Add cluster nodes to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ hostvars[item].cluster_node_ip }}      {{ hostvars[item].inventory_hostname }}"
+    insertafter: EOF
+  with_items: "{{ groups['hosts'] }}"
+

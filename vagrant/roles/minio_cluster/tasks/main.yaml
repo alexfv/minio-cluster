@@ -1,0 +1,41 @@
+- name: Create data directory
+  file:
+    path: "{{ minio_data_dir }}"
+    state: directory
+    mode: "0600"
+    owner: root
+    group: root
+
+- name: Create directory for binaries
+  file:
+    path: "{{ minio_dir_path }}"
+    state: directory
+
+- name: Download MinIO binaries                                                                                                                                                                               
+  get_url:                                                                                                                                                                                                    
+    url: "{{ item.url }}"                                                                                                                                                                                     
+    dest: "{{ minio_dir_path }}/{{ item.name }}"                                                                                                                                                                          
+    mode: '755'                                                                                                                                                                                               
+  with_items:                                                                                                                                                                                                 
+    - { name: "{{ minio_bin_name }}",            url: "{{ minio_server_url }}" }                                                                                                                                                          
+    - { name: "{{ minio_client_bin_name }}",    url: "{{ minio_client_url }}" }                                                                                                                                                          
+  notify: Restart MinIO                                                                                                                                                                                       
+                                                                                                                                                                                                              
+- name: Create systemd service file
+  template:
+
+    src: "{{ minio_bin_name }}.service.j2"
+    dest: "{{ systemd_service_files_dir_path }}/{{ minio_bin_name }}.service"
+    mode: "0644"
+  notify: Restart MinIO
+
+
+- name: Create environment variables file
+  template:
+    src: "{{ minio_bin_name }}.default.j2"
+    dest: "{{ systemd_service_default_envs_path_dir }}/{{ minio_bin_name }}"
+    mode: "0600"
+    owner: root
+    group: root
+  notify: Restart MinIO
+

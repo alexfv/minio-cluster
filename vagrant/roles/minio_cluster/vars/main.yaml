@@ -1,0 +1,9 @@
+minio_data_dir: /data
+minio_shards_per_node: 4
+
+minio_config_path: /etc/default/minio
+minio_dir_path: /usr/bin
+minio_bin_name: minio
+# Since "mc" name conflicts with the well-known binary of Mindingt Commander
+# it should be changed
+minio_client_bin_name: minioclt
