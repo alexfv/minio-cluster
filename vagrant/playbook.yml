@@ -38,8 +38,8 @@
         dest: "/usr/bin/{{ item.name }}"
         mode: '755'
       with_items:
-        - { name: minio, url: "{{ minio_server_url }}" }
-        - { name: mc,    url: "{{ minio_client_url }}" }
+        - { name: minio,       url: "{{ minio_server_url }}" }
+        - { name: minioclt,    url: "{{ minio_client_url }}" }
       notify: Restart MinIO
 
 # Roles and ./files or ./templates directories
